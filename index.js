@@ -42,18 +42,41 @@ async function run() {
       const query = { _id: new ObjectId(id) };
 
       const options = {
-        projection: { title: 1, price: 1, service_id: 1 },
+        projection: { title: 1, price: 1, service_id: 1, img: 1 },
       };
 
       const result = await serviceCollection.findOne(query, options);
       res.send(result);
     });
 
-    // bookins
+    // bookings
+    app.get("/bookings", async (req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email };
+      }
+      const result = await bookingsCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/bookings", async (req, res) => {
       const bookings = req.body;
       console.log(bookings);
       const result = await bookingsCollection.insertOne(bookings);
+      res.send(result);
+    });
+
+    // update
+    app.patch("/bookings/:id", async (req, res) => {
+      const updatedBooking = req.body;
+      console.log(updatedBooking);
+    });
+
+    app.delete("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await bookingsCollection.deleteOne(query);
       res.send(result);
     });
 
